@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# check for the subdomains
+
+#SUB = $2
+
+
+check_ip () {
+	if [ $# -gt 1 ] 
+	then
+		normal_record=$(dig $SUB.$DOMAIN | grep -A 1 "ANSWER SECTION"| awk '{print $4}')
+		normal_ip=$(dig $SUB.$DOMAIN | grep -A 1 "ANSWER SECTION" | awk '{print $5}') 
+		echo The subdomain "$SUB" is a $normal_record record and points to $normal_ip
+	else
+		for str in ${collection[@]}
+	       	do
+			normal_record=$(dig $str.$DOMAIN | grep -A 1 "ANSWER SECTION"| awk '{print $4}')
+                	normal_ip=$(dig $str.$DOMAIN | grep -A 1 "ANSWER SECTION" | awk '{print $5}')
+                	echo The subdomain "$str" is a $normal_record record and points to $normal_ip
+		done
+	fi
+}
+
+DOMAIN=$1
+SUB=$2
+collection=("www" "lb-01" "web-01" "web-02")
+
+
+check_ip $1 $2
